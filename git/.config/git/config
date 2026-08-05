@@ -1,0 +1,18 @@
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+[pull]
+	rebase = true
+[init]
+	defaultBranch = master
+[user]
+	name = Emil Hassslöf
+	email = emil.hasslof@gmail.com
+# Machine-local overrides (e.g. a work email) live in an untracked file.
+# Create ~/.config/git/config.local on the work machine with:
+#   [user]
+#       email = you@company.com
+[include]
+	path = ~/.config/git/config.local
