@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Raycast-style run-or-raise for KDE Plasma (Wayland or X11), via kdotool.
+# Usage: focus-or-launch <kdotool-window-class-regex> <launch-command> [args...]
+#
+# If a window matching the class regex is already open, raise/focus it.
+# Otherwise, launch the given command as a new detached process.
+set -euo pipefail
+
+if ! command -v kdotool >/dev/null 2>&1; then
+    echo "focus-or-launch: kdotool not found (install via AUR: paru -S kdotool)" >&2
+    exit 1
+fi
+
+class="$1"
+shift
+
+win_id=$(kdotool search --class "$class" --limit 1)
+
+if [ -n "$win_id" ]; then
+    kdotool windowactivate "$win_id"
+else
+    setsid -f "$@" >/dev/null 2>&1 < /dev/null
+fi
