@@ -80,6 +80,22 @@ chmod +x "$DOTFILES"/bin/.local/bin/pbcopy "$DOTFILES"/bin/.local/bin/pbpaste
 # ---------------------------------------------------------------------------
 echo "==> Stowing packages into \$HOME"
 cd "$DOTFILES"
+
+# Fresh distros ship a default ~/.bashrc (and similar), which makes `stow` abort
+# that package. Back up any pre-existing NON-symlink file we're about to provide.
+_ts=$(date +%Y%m%d-%H%M%S)
+for pkg in "${PACKAGES[@]}"; do
+  [ -d "$pkg" ] || continue
+  while IFS= read -r -d "" _rel; do
+    _rel=${_rel#./}
+    _t="$HOME/$_rel"
+    if [ -e "$_t" ] && [ ! -L "$_t" ] && [ ! -d "$_t" ]; then
+      mv "$_t" "$_t.pre-dotfiles-$_ts.bak"
+      echo "   backed up ~/$_rel -> ~/$_rel.pre-dotfiles-$_ts.bak"
+    fi
+  done < <(cd "$pkg" && find . -type f -print0)
+done
+
 for pkg in "${PACKAGES[@]}"; do
   [ -d "$pkg" ] || continue
   if stow -v -t "$HOME" "$pkg"; then
