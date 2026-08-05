@@ -1,7 +1,7 @@
 # dotfiles
 
-Portable terminal/CLI environment, self-contained and distro-agnostic
-(Arch/Omarchy and Ubuntu). Managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Portable terminal/CLI environment, self-contained and OS-agnostic
+(Arch/Omarchy, Ubuntu, and macOS). Managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
 ## What's here
 
@@ -22,7 +22,7 @@ Each top-level folder is a **Stow package** whose inner tree mirrors `$HOME`:
 ```bash
 git clone <this-repo> ~/dotfiles
 cd ~/dotfiles
-./bootstrap.sh          # installs tools (pacman or apt) then stows everything
+./bootstrap.sh          # installs tools (pacman / apt / brew) then stows everything
 exec bash               # reload the shell
 ```
 
@@ -56,4 +56,8 @@ package (e.g. `btop/.config/btop/btop.conf`), then `stow btop`.
 - **Ghostty** has no official apt package; on Ubuntu use a community build or
   fall back to kitty. Everything else installs cleanly on both distros.
 - On Ubuntu, `bat`→`batcat` and `fd`→`fdfind`; `bootstrap.sh` adds `~/.local/bin`
-  shims so the normal names work.
+  shims so the normal names work. (brew keeps the normal names, so macOS is unaffected.)
+- **macOS** needs a modern bash (`brew install bash`); the config uses bash 4+ features.
+  Clipboard uses the native `pbcopy`/`pbpaste` (the shims `exec` them on Darwin), and
+  the Linux-only `open()`/completion/fzf paths are OS-guarded so nothing clobbers native
+  tools. Ghostty installs via `brew install --cask ghostty`.

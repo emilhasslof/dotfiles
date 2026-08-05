@@ -15,6 +15,9 @@ export MANROFFOPT="-c"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"   # colorized man pages via bat
 export PATH="$HOME/.local/bin:$PATH"
 
+# Homebrew on Apple Silicon: put brew tools on PATH for non-login shells (tmux panes, etc.)
+[[ -d /opt/homebrew/bin ]] && export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+
 # ---------------------------------------------------------------------------
 # History
 # ---------------------------------------------------------------------------
@@ -28,9 +31,14 @@ set +h   # disable command hashing (recommended for mise)
 # ---------------------------------------------------------------------------
 # Bash completion
 # ---------------------------------------------------------------------------
-if [[ ! -v BASH_COMPLETION_VERSINFO && -f /usr/share/bash-completion/bash_completion ]]; then
-  source /usr/share/bash-completion/bash_completion
-fi
+# Path differs by OS: Linux = /usr/share, macOS/brew = $(brew --prefix)/etc/profile.d
+for _bc in /usr/share/bash-completion/bash_completion \
+           /opt/homebrew/etc/profile.d/bash_completion.sh \
+           /usr/local/etc/profile.d/bash_completion.sh; do
+  if [[ ! -v BASH_COMPLETION_VERSINFO && -f "$_bc" ]]; then
+    source "$_bc"; break
+  fi
+done; unset _bc
 
 # ---------------------------------------------------------------------------
 # Aliases (curated from Omarchy defaults + personal)
@@ -71,8 +79,10 @@ alias gcad='git commit -a --amend'
 # tmux
 alias t='tmux attach || tmux new -s Work'
 
-# open (detached xdg-open)
-open() ( xdg-open "$@" >/dev/null 2>&1 & )
+# open (detached xdg-open) — Linux only; never shadow macOS's native `open`
+if command -v xdg-open &>/dev/null; then
+  open() ( xdg-open "$@" >/dev/null 2>&1 & )
+fi
 
 # ---------------------------------------------------------------------------
 # Tool initialisation
@@ -97,9 +107,11 @@ if [[ ${TERM:-} != dumb ]] && command -v starship &>/dev/null; then
   eval "$(starship init bash)"
 fi
 
-# fzf keybindings/completion (path differs: Arch = /usr/share/fzf, Debian/Ubuntu = /usr/share/doc/fzf/examples)
+# fzf keybindings/completion — path differs per platform:
+#   Arch = /usr/share/fzf | Debian/Ubuntu = /usr/share/doc/fzf/examples | brew = $(brew --prefix)/opt/fzf/shell
 if command -v fzf &>/dev/null; then
-  for d in /usr/share/fzf /usr/share/doc/fzf/examples; do
+  for d in /usr/share/fzf /usr/share/doc/fzf/examples \
+           /opt/homebrew/opt/fzf/shell /usr/local/opt/fzf/shell; do
     [[ -f "$d/key-bindings.bash" ]] && source "$d/key-bindings.bash"
     [[ -f "$d/completion.bash"   ]] && source "$d/completion.bash"
   done
