@@ -16,6 +16,8 @@ Each top-level folder is a **Stow package** whose inner tree mirrors `$HOME`:
 | `git`      | `~/.config/git/{config,ignore}`    | aliases + identity (override email locally) |
 | `bin`      | `~/.local/bin/{pbcopy,pbpaste}`    | clipboard shims (wl-copy/xclip/native) |
 | `nvim`     | `~/.config/nvim/`                  | LazyVim config |
+| `lazygit`  | `~/.config/lazygit/config.yml`     | tab keybindings (`h`/`l`) |
+| `btop`     | `~/.config/btop/btop.conf`         | system monitor (nord theme) |
 
 ## Install on a new machine
 

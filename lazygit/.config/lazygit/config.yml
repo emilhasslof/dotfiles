@@ -1,0 +1,7 @@
+keybinding:
+  universal:
+    nextTab: 'l'
+    prevTab: 'h'
+    prevBlock-alt: ''
+    nextBlock-alt: ''
+
