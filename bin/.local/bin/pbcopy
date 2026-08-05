@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Portable pbcopy shim: copy stdin to the system clipboard on any platform.
+# Order: macOS native → Wayland (wl-copy) → X11 (xclip/xsel).
+if [ "$(uname)" = "Darwin" ]; then exec /usr/bin/pbcopy; fi
+if command -v wl-copy >/dev/null 2>&1; then exec wl-copy; fi
+if command -v xclip   >/dev/null 2>&1; then exec xclip -selection clipboard; fi
+if command -v xsel    >/dev/null 2>&1; then exec xsel  --clipboard --input; fi
+echo "pbcopy: no clipboard tool found (install wl-clipboard or xclip)" >&2
+exit 1
