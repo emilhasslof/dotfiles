@@ -12,12 +12,14 @@ PACKAGES=(bash tmux starship ghostty git bin nvim)
 # --- detect package manager -------------------------------------------------
 if   command -v pacman  >/dev/null; then PM=pacman
 elif command -v apt-get >/dev/null; then PM=apt
-else echo "Unsupported system: need pacman or apt." >&2; exit 1
+elif command -v brew    >/dev/null; then PM=brew
+else echo "Unsupported system: need pacman, apt, or brew." >&2; exit 1
 fi
 echo "==> Package manager: $PM"
 
 pac()   { sudo pacman -S --needed --noconfirm "$@"; }
 aptin() { sudo apt-get install -y "$@"; }
+brewin() { brew install "$@"; }
 have()  { command -v "$1" >/dev/null 2>&1; }
 
 mkdir -p "$HOME/.local/bin"
@@ -29,7 +31,17 @@ echo "==> Installing base packages"
 if [ "$PM" = pacman ]; then
   pac git tmux ripgrep fzf bash-completion stow wl-clipboard xclip \
       eza zoxide bat fd starship lazygit fastfetch neovim ghostty
-else
+
+elif [ "$PM" = brew ]; then
+  brew update
+  # brew keeps normal binary names (bat/fd), so no batcat/fdfind fixups needed.
+  # No wl-clipboard/xclip: macOS has native pbcopy/pbpaste (the shims exec them).
+  brewin git tmux ripgrep fzf bash-completion@2 stow \
+         eza zoxide bat fd starship lazygit fastfetch neovim mise
+  brew install --cask ghostty || echo "!! ghostty cask failed; install manually or use another terminal."
+  brew install --cask font-jetbrains-mono-nerd-font || echo "!! nerd font cask failed; install a JetBrainsMono Nerd Font manually."
+
+else   # apt
   sudo apt-get update
   aptin git tmux ripgrep fzf bash-completion stow wl-clipboard xclip \
         zoxide bat fd-find fastfetch neovim
