@@ -44,7 +44,7 @@ elif [ "$PM" = brew ]; then
 else   # apt
   sudo apt-get update
   aptin git tmux ripgrep fzf bash-completion stow wl-clipboard xclip \
-        zoxide bat fd-find fastfetch neovim tealdeer
+        zoxide bat fd-find neovim tealdeer
   # --- Ubuntu binary-name fixups ------------------------------------------
   # bat installs as `batcat`, fd as `fdfind`; add friendly names on PATH.
   have batcat && ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"
