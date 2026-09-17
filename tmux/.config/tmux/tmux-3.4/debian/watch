@@ -1,0 +1,4 @@
+version=4
+opts="dversionmangle=s/~rc/-rc/;s/-rc1$/-rc/" \
+      https://github.com/tmux/tmux/tags \
+      /tmux/tmux/archive/refs/tags/(.+).tar.gz debian uupdate
