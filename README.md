@@ -10,6 +10,7 @@ Each top-level folder is a **Stow package** whose inner tree mirrors `$HOME`:
 | Package    | Links to                          | Contents |
 |------------|-----------------------------------|----------|
 | `bash`     | `~/.bashrc`                        | self-contained shell config (no Omarchy dependency) |
+| `zsh`      | `~/.zshrc`                         | portable Zsh config, completion, history, and tool setup |
 | `tmux`     | `~/.config/tmux/tmux.conf`         | prefix `C-j`, vi copy, portable clipboard |
 | `starship` | `~/.config/starship.toml`          | prompt |
 | `ghostty`  | `~/.config/ghostty/config`         | terminal (GruvboxDark base theme) |
@@ -25,7 +26,7 @@ Each top-level folder is a **Stow package** whose inner tree mirrors `$HOME`:
 git clone <this-repo> ~/dotfiles
 cd ~/dotfiles
 ./bootstrap.sh          # installs tools (pacman / apt / brew) then stows everything
-exec bash               # reload the shell
+exec bash               # reload Bash (or: exec zsh for Zsh)
 ```
 
 ## How Stow works (quick reference)
@@ -50,8 +51,27 @@ package (e.g. `btop/.config/btop/btop.conf`), then `stow btop`.
   [user]
       email = you@company.com
   ```
-- **Machine-only shell tweaks:** create `~/.bashrc.local` (git-ignored); it's
-  sourced automatically at the end of `.bashrc`.
+- **Machine-only shell tweaks:** create `~/.bashrc.local` or `~/.zshrc.local`
+  (git-ignored); each is sourced automatically at the end of its shell's config.
+  Keep work-specific paths, aliases, and token loading there, not in the tracked
+  configs.
+
+## Adopt an existing Zsh setup
+
+Keep portable settings in `zsh/.zshrc` and move machine-specific settings into
+`~/.zshrc.local`. Back up an existing `~/.zshrc` before linking the package:
+
+```bash
+cd ~/dotfiles
+mv ~/.zshrc ~/.zshrc.pre-dotfiles-$(date +%Y%m%d-%H%M%S).bak
+stow -t "$HOME" zsh
+exec zsh
+```
+
+Edits to `~/.zshrc` now update the repository through the symlink; local overrides
+stay on that machine. Bootstrap also backs up existing regular config files
+before linking, but does not split their contents into local overrides for you.
+Neither bootstrap nor Stow changes your default login shell.
 
 ## Notes / caveats
 

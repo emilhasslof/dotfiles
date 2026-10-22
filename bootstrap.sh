@@ -7,7 +7,7 @@
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PACKAGES=(bash tmux starship ghostty git bin nvim lazygit btop)
+PACKAGES=(bash zsh tmux starship ghostty git bin nvim lazygit btop)
 
 # --- detect package manager -------------------------------------------------
 if   command -v pacman  >/dev/null; then PM=pacman
@@ -29,21 +29,21 @@ mkdir -p "$HOME/.local/bin"
 # ---------------------------------------------------------------------------
 echo "==> Installing base packages"
 if [ "$PM" = pacman ]; then
-  pac git tmux ripgrep fzf bash-completion stow wl-clipboard xclip \
+  pac git zsh tmux ripgrep fzf bash-completion stow wl-clipboard xclip \
       eza zoxide bat fd starship lazygit fastfetch neovim ghostty tealdeer
 
 elif [ "$PM" = brew ]; then
   brew update
   # brew keeps normal binary names (bat/fd), so no batcat/fdfind fixups needed.
   # No wl-clipboard/xclip: macOS has native pbcopy/pbpaste (the shims exec them).
-  brewin git tmux ripgrep fzf bash-completion@2 stow \
+  brewin git zsh tmux ripgrep fzf bash-completion@2 stow \
          eza zoxide bat fd starship lazygit fastfetch neovim mise tealdeer
   brew install --cask ghostty || echo "!! ghostty cask failed; install manually or use another terminal."
   brew install --cask font-jetbrains-mono-nerd-font || echo "!! nerd font cask failed; install a JetBrainsMono Nerd Font manually."
 
 else   # apt
   sudo apt-get update
-  aptin git tmux ripgrep fzf bash-completion stow wl-clipboard xclip \
+  aptin git zsh tmux ripgrep fzf bash-completion stow wl-clipboard xclip \
         zoxide bat fd-find neovim tealdeer
   # --- Ubuntu binary-name fixups ------------------------------------------
   # bat installs as `batcat`, fd as `fdfind`; add friendly names on PATH.
@@ -107,5 +107,5 @@ for pkg in "${PACKAGES[@]}"; do
 done
 
 echo
-echo "==> Done. Open a new shell (or: exec bash) to load everything."
+echo "==> Done. Open a new shell (or: exec bash / exec zsh) to load everything."
 echo "    Set a work git email in ~/.config/git/config.local if needed."

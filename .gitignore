@@ -1,6 +1,7 @@
 # Never commit machine-local overrides or secrets
 **/config.local
 .bashrc.local
+.zshrc.local
 .DS_Store
 
 # nvim runtime state (plugins live in ~/.local/share/nvim, not here)
