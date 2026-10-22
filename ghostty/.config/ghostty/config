@@ -2,7 +2,7 @@
 # below overrides it with the live dynamic theme; on other machines it is
 # ignored gracefully thanks to the leading `?`.
 # Browse alternatives with:  ghostty +list-themes
-theme = Nordfox
+theme = Onenord
 config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
 
 # Font
